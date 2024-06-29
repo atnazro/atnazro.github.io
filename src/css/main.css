@@ -33,7 +33,7 @@
 
 }
 
-.title {
+.h1 {
     margin-left: 10px;
     color: var(--text-light);
     font-size: 20px;
@@ -83,27 +83,6 @@
 }
 
 
-.link-button {
-    text-decoration: none;
-
-    margin: 0 1rem;
-    padding: 0.5rem 1rem;
-    background-color: var(--shiva-dark);
-    color: var(--text-light);
-    cursor: pointer;
-    transition: background-color 0.3s;
-    height: 40px;
-    width: 80px;
-    margin: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.link-button:hover {
-    background-color: var(--shiva-purple);
-}
-
 .main {
     width: 100%;
     min-height: 100vh;
@@ -126,22 +105,6 @@
     padding: 20px;
 }
 
-.aside-link>a {
-    color: white;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    width: 90px;
-    transition-duration: 0.3s;
-    font-size: 15px;
-}
-
-.aside-link>a:hover,
-.aside-link>a:active {
-    background-color: var(--shiva-dark);
-}
 
 .footer {
     background-color: var(--shiva-dark);

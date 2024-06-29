@@ -244,7 +244,47 @@ class Shiva {
 
         table.appendChild(tbody);
         target.appendChild(table);
+    };
+
+    static fetchData(data = {}, targetElement) {
+        return new Promise((resolve, reject) => {
+            // Create a script element
+            let script = document.createElement('script');
+
+            // Set script attributes
+            script.src = data.src; // Source URL of the script file
+            if (data.statement) {
+                script.textContent = data.statement; // Script code to execute
+            }
+            script.type = data.type || 'text/javascript'; // Script type (defaults to JavaScript)
+
+            // Define onload and onerror handlers
+            script.onload = () => {
+                resolve('Script loaded and executed successfully');
+
+                // Remove the script element after execution
+                script.remove();
+            };
+
+            script.onerror = (error) => {
+                reject(`Error loading script: ${error}`);
+
+                // Remove the script element on error (if needed)
+                script.remove();
+            };
+
+            // Find the target element where script should be appended
+            const target = document.querySelector(targetElement);
+            if (!target) {
+                reject(`Target element '${targetElement}' not found.`);
+                return;
+            }
+
+            // Append the script to the target element to initiate loading and execution
+            target.appendChild(script);
+        });
     }
+
 }
 
 export default Shiva;

@@ -8,7 +8,6 @@
  * @contact nazrotech@outlook.com
  * @license Anyone can use this code, but modifications are prohibited.
  */
-
 class Shiva {
     /**
      * Creates DOM elements based on provided data and appends them to a target element in the DOM.
@@ -39,8 +38,10 @@ class Shiva {
                     break;
                 case 'image':
                     element = document.createElement('img');
-                    element.src = node.data.path;
-                    element.alt = node.metaData.alt || ''; // Alt text for images
+                    if (node.data && node.data.path) {
+                        element.src = node.data.path; // Set src from data path if available
+                    }
+                    element.alt = node.metaData && node.metaData.alt ? node.metaData.alt : ''; // Alt text for images
                     break;
                 case 'video':
                     element = document.createElement('video');
@@ -307,4 +308,3 @@ class Shiva {
 }
 
 export default Shiva;
-

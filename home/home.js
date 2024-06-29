@@ -20,38 +20,17 @@ const data = [
         data: "This is text content"
     },
     {
+        metaData: {
+            "alt": "alter text",
+            "css" : {
+                height:"200px",
+            }
+        },
         type: "image",
-        metaData: {
-            css: {
-                border: "1px solid black",
-            },
-            events: {
-                "mouseover": {
-                    type: "mouseover",
-                    run: function () {
-                        console.log('Image hovered');
-                    }
-                }
-            },
-            other: {
-                title: "Example Image",
-                altText: "Alt text for image",
-                time: "2024-06-30"
-            }
+        data: {
+            path: "./src/image/profile/pruthviraj.jpg",
         },
-        data: "img/src/pic.png"
-    },
-    {
-        type: "element",
-        metaData: {
-            class: "example-element",
-        },
-        data: [
-            {
-                type: "text",
-                data: "Nested text content"
-            }
-        ]
+
     }
 ];
 

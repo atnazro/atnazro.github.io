@@ -4,7 +4,7 @@
  * tags, categories, and specific attributes for different HTML elements.
  *
  * @version 2024.1
- * @author Chauhan Pruthviraj
+ * @autor Chauhan Pruthviraj
  * @contact nazrotech@outlook.com
  * @license Anyone can use this code, but modifications are prohibited.
  */
@@ -23,75 +23,82 @@ class Shiva {
         Shiva.cleanTargetElement(targetElement);
 
         /**
-         * Creates a DOM element based on the node type and its data.
+         * Creates a DOM element based on the elementType and its data.
          * Applies metadata if available.
          * @param {Object} node - The node object defining element type and data.
          * @returns {HTMLElement} The created DOM element.
          */
         function createElement(node) {
-            let element;
+            const element = document.createElement(node.elementType);
 
-            switch (node.type) {
-                case 'text':
-                    element = document.createElement('p');
-                    element.textContent = node.data;
+            switch (node.elementType) {
+                case 'p':
+                    element.textContent = node.data.text || '';
                     break;
-                case 'image':
-                    element = document.createElement('img');
-                    if (node.data && node.data.path) {
-                        element.src = node.data.path; // Set src from data path if available
-                    }
-                    element.alt = node.metaData && node.metaData.alt ? node.metaData.alt : ''; // Alt text for images
+                case 'img':
+                    element.src = node.data.path || '';
+                    element.alt = node.data.alt || '';
                     break;
                 case 'video':
-                    element = document.createElement('video');
-                    element.src = node.data.path;
-                    element.controls = node.data.controls || false; // Video controls
-                    element.type = node.data.type || ''; // Video MIME type
+                    element.src = node.data.path || '';
+                    element.controls = node.data.controls || false;
+                    element.type = node.data.type || '';
                     if (node.data.loop) {
-                        element.loop = true; // Video loop attribute
+                        element.loop = true;
                     }
                     break;
                 case 'script':
-                    element = document.createElement('script');
-                    element.src = node.data.path;
-                    Shiva.loadScript(element); // Load script dynamically
+                    element.src = node.data.path || '';
+                    Shiva.loadScript(element);
                     break;
-                case 'element':
-                    element = document.createElement('div');
-                    Shiva.createData(node.data, element); // Recursively create nested elements
+                case 'div':
+                    if (node.data.children) {
+                        Shiva.createData(node.data.children, element);
+                    }
                     break;
-                case 'table':
-                    element = document.createElement('table');
-                    Shiva.createTable(element, node.data); // Create table with data
-                    break;
-                case 'heading':
-                    element = document.createElement(`h${node.data.level}`);
-                    element.textContent = node.data.text;
-                    break;
-                case 'paragraph':
-                    element = document.createElement('p');
-                    element.textContent = node.data.text;
+                case 'h1':
+                case 'h2':
+                case 'h3':
+                case 'h4':
+                case 'h5':
+                case 'h6':
+                    element.textContent = node.data.text || '';
                     break;
                 case 'nav':
-                    element = document.createElement('nav');
-                    Shiva.createData(node.data, element); // Create navigation elements
-                    break;
                 case 'footer':
-                    element = document.createElement('footer');
-                    element.textContent = node.data.text;
-                    break;
                 case 'caption':
-                    element = document.createElement('caption');
-                    element.textContent = node.data.text;
+                    element.textContent = node.data.text || '';
+                    if (node.data.children) {
+                        Shiva.createData(node.data.children, element);
+                    }
                     break;
                 default:
-                    throw new Error(`Unknown element type: ${node.type}`);
+                    throw new Error(`Unknown element type: ${node.elementType}`);
             }
 
-            // Apply metadata if available
-            if (node.metaData) {
-                Shiva.applyMetadata(element, node.metaData);
+            // Apply CSS if available
+            if (node.data.css) {
+                Shiva.applyCSSStyles(element, node.data.css);
+            }
+
+            // Apply scripts if available
+            if (node.data.script) {
+                Shiva.applyScript(element, node.data.script);
+            }
+
+            // Apply events if available
+            if (node.data.events) {
+                Shiva.applyEvents(element, node.data.events);
+            }
+
+            // Apply classes if available
+            if (node.data.class) {
+                Shiva.applyClasses(element, node.data.class);
+            }
+
+            // Apply ID if available
+            if (node.data.id) {
+                Shiva.applyId(element, node.data.id);
             }
 
             return element;
@@ -112,38 +119,6 @@ class Shiva {
         scriptElement.type = 'module'; // Set type to module
         scriptElement.onload = () => scriptElement.remove(); // Remove script after execution
         document.body.appendChild(scriptElement); // Append script to body to initiate loading
-    }
-
-    /**
-     * Applies metadata properties (e.g., CSS styles, scripts, events) to a DOM element.
-     * @param {HTMLElement} element - The DOM element to apply metadata to.
-     * @param {Object} metaData - Metadata object containing CSS styles, scripts, events, tags, and category.
-     */
-    static applyMetadata(element, metaData) {
-        if (metaData.css) {
-            Shiva.applyCSSStyles(element, metaData.css);
-        }
-        if (metaData.script) {
-            Shiva.applyScript(element, metaData.script);
-        }
-        if (metaData.events) {
-            Shiva.applyEvents(element, metaData.events);
-        }
-        if (metaData.tags) {
-            Shiva.applyTags(element, metaData.tags);
-        }
-        if (metaData.category) {
-            Shiva.applyCategory(element, metaData.category);
-        }
-        if (metaData.class) {
-            Shiva.applyClasses(element, metaData.class);
-        }
-        if (metaData.id) {
-            Shiva.applyId(element, metaData.id);
-        }
-        if (metaData.other) {
-            Shiva.applyOtherMetadata(element, metaData.other);
-        }
     }
 
     /**
@@ -178,28 +153,9 @@ class Shiva {
      * @param {Object} events - Event object containing event types and handler functions.
      */
     static applyEvents(element, events) {
-        Object.keys(events).forEach(key => {
-            const event = events[key];
-            element.addEventListener(event.type, event.run);
+        Object.keys(events).forEach(eventType => {
+            element.addEventListener(eventType, events[eventType]);
         });
-    }
-
-    /**
-     * Applies tags to a DOM element using a dataset attribute.
-     * @param {HTMLElement} element - The DOM element to apply tags to.
-     * @param {string[]} tags - Array of tags to apply to the element.
-     */
-    static applyTags(element, tags) {
-        element.dataset.tags = tags.join(', ');
-    }
-
-    /**
-     * Applies category information to a DOM element using a dataset attribute.
-     * @param {HTMLElement} element - The DOM element to apply category information to.
-     * @param {Object} category - Category object containing main and sub categories.
-     */
-    static applyCategory(element, category) {
-        element.dataset.category = JSON.stringify(category);
     }
 
     /**
@@ -219,22 +175,6 @@ class Shiva {
      */
     static applyId(element, id) {
         element.id = id;
-    }
-
-    /**
-     * Applies other metadata properties to a DOM element.
-     * @param {HTMLElement} element - The DOM element to apply metadata to.
-     * @param {Object} other - Other metadata properties to apply.
-     */
-    static applyOtherMetadata(element, other) {
-        for (let key in other) {
-            // Check if the key is a valid HTML attribute name
-            if (/^[a-zA-Z]+[\w-]*$/.test(key)) {
-                element.dataset[key] = other[key];
-            } else {
-                console.warn(`Invalid metadata key: ${key}. Skipping...`);
-            }
-        }
     }
 
     /**
@@ -273,7 +213,7 @@ class Shiva {
     /**
      * Creates a table element based on provided data structure and appends it to a target element.
      * @param {HTMLElement} target - The target element where the table will be appended.
-     * @param {Array} data - The data defining the table structure and content.
+     * @param {Object} data - The data defining the table structure and content.
      */
     static createTable(target, data) {
         const table = document.createElement('table');

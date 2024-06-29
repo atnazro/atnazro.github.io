@@ -65,6 +65,8 @@
     width: 15px;
 }
 
+
+
 .nav {
     position: absolute;
     min-height: 100vh;
@@ -151,141 +153,17 @@
     justify-content: center;
 }
 
-
-
-/* Add other styles as needed */
-
-
-.learn-article {
-    background-color: var(--shiva-dark);
-    max-width: 100%;
-    padding: 10px;
-    margin: 10px;
-}
-
-
-.content {
-    background-color: var(--shiva-dark);
-}
-
-
-
-.text {
-    line-height: 30px;
-    padding: 10px;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.learn {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.learn-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
+.nav>p {
+    transition-duration: 0.2s;
     height: 40px;
-    width: 80px;
-    border: none;
-    background-color: lime;
-    color: var(--shiva-dark)
-}
-
-/* ==============*/
-
-@media all and (min-width:1000px) {
-    .learn-article {
-        display: flex;
-        flex-direction: row;
-    }
-
-    .content {
-        width: 600px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: center;
-    }
-
-
-
-
-    .content-image {
-        margin: 10px;
-        width: 400px;
-    }
-
-    .content-image>img {
-        width: 400px;
-    }
-}
-
-
-@media all and (max-width:999px) {
-
-
-    .learn-article {
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .content {
-        width: 90%;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        justify-content: center;
-    }
-
-
-
-
-    .content-image {
-        margin: 10px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .content-image>img {
-        width: 90%;
-    }
-}
-
-/* ========= */
-.about-me-article {
-    background-color: var(--shiva-dark);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
-.about-me {
-    font-size: 18px;
-    line-height: 35px;
-    padding: 20px;
-    border-radius: 20px;
-}
-
-.profile-picture {
+    width: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
+    margin: 5px;
+    background-color: rgb(169, 5, 190);
 }
 
-.profile-picture>image {
-    min-width: 350px;
-    max-width: 400px;
-    min-height: 360px;
-    max-height: 400px;
+.nav>p:hover {
+    transform: scale(0.9, 0.9);
 }

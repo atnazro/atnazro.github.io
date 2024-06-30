@@ -244,19 +244,28 @@ class Shiva {
 
         table.appendChild(tbody);
         target.appendChild(table);
-    };
+    }
 
-    static fetchData(data = {}, targetElement) {
+    /**
+     * Dynamically loads and executes a script file, and appends it to a target element.
+     * @param {string} scriptPath - The path to the script file to be loaded.
+     * @param {string|HTMLElement} targetElement - The target element where the script will be appended.
+     * @returns {Promise} A promise that resolves when the script is loaded and executed successfully.
+     */
+    static fetchData(scriptPath, targetElement) {
         return new Promise((resolve, reject) => {
+            // Validate scriptPath
+            if (!scriptPath) {
+                reject('Script path is required.');
+                return;
+            }
+
             // Create a script element
-            let script = document.createElement('script');
+            const script = document.createElement('script');
 
             // Set script attributes
-            script.src = data.src; // Source URL of the script file
-            if (data.statement) {
-                script.textContent = data.statement; // Script code to execute
-            }
-            script.type = data.type || 'text/javascript'; // Script type (defaults to JavaScript)
+            script.src = scriptPath; // Source URL of the script file
+            script.type = 'module'; // Set type to module
 
             // Define onload and onerror handlers
             script.onload = () => {
@@ -267,14 +276,14 @@ class Shiva {
             };
 
             script.onerror = (error) => {
-                reject(`Error loading script: ${error}`);
+                reject(`Error loading script: ${error.message || error}`);
 
-                // Remove the script element on error (if needed)
+                // Remove the script element on error
                 script.remove();
             };
 
-            // Find the target element where script should be appended
-            const target = document.querySelector(targetElement);
+            // Find the target element where the script should be appended
+            const target = Shiva.getTargetElement(targetElement);
             if (!target) {
                 reject(`Target element '${targetElement}' not found.`);
                 return;
@@ -284,7 +293,7 @@ class Shiva {
             target.appendChild(script);
         });
     }
-
 }
 
 export default Shiva;
+    

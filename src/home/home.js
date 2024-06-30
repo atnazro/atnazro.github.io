@@ -1,6 +1,6 @@
+import Shiva from "../js/shiva.js";
 
-
-const data = [
+const homePage = [
     {
         elementType: "img",
         data: {
@@ -56,5 +56,6 @@ const data = [
     }
 ];
 
+Shiva.createData(homePage,"main")
 
-export { data }
+export { homePage }

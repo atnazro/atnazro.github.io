@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="src/css/main.css" type="text/css" />
 </head>
 
-<body class="body" id="body">
+<body class="body" id="body" onload="loadHomePage()">
     <header class="header" id="header">
         <h1 class="h1" id="h1" title="Chauhan Pruthviraj">Pruthviraj</h1>
         <div class="menu" id="menu" onclick="openNav()">
@@ -21,7 +21,7 @@
         </div>
     </header>
     <nav class="nav" id="nav">
-        <p onclick="loadAbout()">About</p>
+        <p onclick="loadAboutPage()">About</p>
         <p>Blog</p>
         <p>Technology</p>
         <p>More</p>
@@ -33,7 +33,7 @@
     </main>
     <footer id="footer" class="footer"></footer>
 </body>
-<script src="src/js/app.js" type="module"></script>
+<script src="app.js" type="module"></script>
 <script src="src/js/config.js"></script>
 
 </html>

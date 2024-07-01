@@ -49,7 +49,7 @@ class Shiva {
                     break;
                 case 'script':
                     element.src = node.data.path || '';
-                    Shiva.loadScript(element);
+                    Shiva.fetchData(element.src, element).then(msg => console.log(msg)).catch(error => console.error(error));
                     break;
                 case 'div':
                     if (node.data.children) {
@@ -81,11 +81,6 @@ class Shiva {
                 Shiva.applyCSSStyles(element, node.data.css);
             }
 
-            // Apply scripts if available
-            if (node.data.script) {
-                Shiva.applyScript(element, node.data.script);
-            }
-
             // Apply events if available
             if (node.data.events) {
                 Shiva.applyEvents(element, node.data.events);
@@ -112,13 +107,51 @@ class Shiva {
     }
 
     /**
-     * Loads a script dynamically into a DOM element and cleans up after execution.
-     * @param {HTMLScriptElement} scriptElement - The script element to load.
+     * Dynamically loads and executes a script file, and appends it to a target element.
+     * @param {string} scriptPath - The path to the script file to be loaded.
+     * @param {string|HTMLElement} targetElement - The target element where the script will be appended.
+     * @returns {Promise} A promise that resolves when the script is loaded and executed successfully.
      */
-    static loadScript(scriptElement) {
-        scriptElement.type = 'module'; // Set type to module
-        scriptElement.onload = () => scriptElement.remove(); // Remove script after execution
-        document.body.appendChild(scriptElement); // Append script to body to initiate loading
+    static fetchData(scriptPath, targetElement) {
+        return new Promise((resolve, reject) => {
+            // Validate scriptPath
+            if (!scriptPath) {
+                reject('Script path is required.');
+                return;
+            }
+
+            // Create a script element
+            const script = document.createElement('script');
+
+            // Set script attributes
+            script.src = scriptPath; // Source URL of the script file
+            script.type = 'module'; // Set type to module
+
+            // Define onload and onerror handlers
+            script.onload = () => {
+                resolve('Script loaded and executed successfully');
+
+                // Remove the script element after execution
+                script.remove();
+            };
+
+            script.onerror = (error) => {
+                reject(`Error loading script: ${error.message || error}`);
+
+                // Remove the script element on error
+                script.remove();
+            };
+
+            // Find the target element where the script should be appended
+            const target = Shiva.getTargetElement(targetElement);
+            if (!target) {
+                reject(`Target element '${targetElement}' not found.`);
+                return;
+            }
+
+            // Append the script to the target element to initiate loading and execution
+            target.appendChild(script);
+        });
     }
 
     /**
@@ -129,21 +162,6 @@ class Shiva {
     static applyCSSStyles(element, styles) {
         Object.keys(styles).forEach(style => {
             element.style[style] = styles[style];
-        });
-    }
-
-    /**
-     * Applies script(s) to a DOM element.
-     * @param {HTMLElement} element - The DOM element to append script(s) to.
-     * @param {string|string[]} scripts - Script source URL(s) or an array of script URLs.
-     */
-    static applyScript(element, scripts) {
-        const scriptArray = Array.isArray(scripts) ? scripts : [scripts];
-        scriptArray.forEach(script => {
-            const scriptElement = document.createElement('script');
-            scriptElement.src = script;
-            Shiva.loadScript(scriptElement); // Load script dynamically
-            element.appendChild(scriptElement);
         });
     }
 
@@ -209,91 +227,6 @@ class Shiva {
             target.removeChild(target.firstChild);
         }
     }
-
-    /**
-     * Creates a table element based on provided data structure and appends it to a target element.
-     * @param {HTMLElement} target - The target element where the table will be appended.
-     * @param {Object} data - The data defining the table structure and content.
-     */
-    static createTable(target, data) {
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        const tbody = document.createElement('tbody');
-        const headerRow = document.createElement('tr');
-
-        // Create table headers
-        data.headers.forEach(header => {
-            const th = document.createElement('th');
-            th.textContent = header;
-            headerRow.appendChild(th);
-        });
-
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        // Create table rows and cells
-        data.rows.forEach(rowData => {
-            const tr = document.createElement('tr');
-            rowData.forEach(cellData => {
-                const td = document.createElement('td');
-                td.textContent = cellData;
-                tr.appendChild(td);
-            });
-            tbody.appendChild(tr);
-        });
-
-        table.appendChild(tbody);
-        target.appendChild(table);
-    }
-
-    /**
-     * Dynamically loads and executes a script file, and appends it to a target element.
-     * @param {string} scriptPath - The path to the script file to be loaded.
-     * @param {string|HTMLElement} targetElement - The target element where the script will be appended.
-     * @returns {Promise} A promise that resolves when the script is loaded and executed successfully.
-     */
-    static fetchData(scriptPath, targetElement) {
-        return new Promise((resolve, reject) => {
-            // Validate scriptPath
-            if (!scriptPath) {
-                reject('Script path is required.');
-                return;
-            }
-
-            // Create a script element
-            const script = document.createElement('script');
-
-            // Set script attributes
-            script.src = scriptPath; // Source URL of the script file
-            script.type = 'module'; // Set type to module
-
-            // Define onload and onerror handlers
-            script.onload = () => {
-                resolve('Script loaded and executed successfully');
-
-                // Remove the script element after execution
-                script.remove();
-            };
-
-            script.onerror = (error) => {
-                reject(`Error loading script: ${error.message || error}`);
-
-                // Remove the script element on error
-                script.remove();
-            };
-
-            // Find the target element where the script should be appended
-            const target = Shiva.getTargetElement(targetElement);
-            if (!target) {
-                reject(`Target element '${targetElement}' not found.`);
-                return;
-            }
-
-            // Append the script to the target element to initiate loading and execution
-            target.appendChild(script);
-        });
-    }
 }
 
 export default Shiva;
-    
